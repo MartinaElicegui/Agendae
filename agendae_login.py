@@ -33,11 +33,11 @@ table_header = driver.find_elements_by_xpath('//*[@id="divgrillalistadogeneral"]
 
 
 
-header_row = []
-for header in table_header:
-    header_row.append(header.text)
+# header_row = []
+# for header in table_header:
+#     header_row.append(header.text)
 
-print(header_row)
+# print(header_row)
 
 ##table_data = driver.find_elements_by_xpath('//*[@id="ContenidoDentroDeMaster_gridListado"]/tbody/tr[2]')
 table_data = driver.find_elements_by_xpath('./th')
