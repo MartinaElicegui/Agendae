@@ -85,63 +85,40 @@ def navegarPorTasas(driver, cant):
         sleep(3)
         try:
             urlTasa = driver.find_element_by_xpath("//div[@id='mediomenucontenido']//div["+str(i)+"]//a[1]")
-            # urlTasa = driver.find_element_by_xpath("//div[@id='mediomenucontenido']//div["+str(i)+"]//a[1]")
-            # urlTasa = driver.presence_of_element_located("//div[@id='mediomenucontenido']//div["+str(i)+"]//a[1]")
-            # ActionChains(driver).move_to_element(urlTasa).click(urlTasa).perform()
             print("Este es el texto contenido: ",urlTasa.text)
             urlTasa.click()
         except:
             print("No se ha encontrado la URL de la Tasa")
         sleep(2)
-        # volverPaginaAnterior(driver)
-
-# //div[@id='mediomenucontenido']//div[2]//a[1] 
 
 def volverPaginaAnterior(driver):
     driver.execute_script("window.history.go(-1)")
 
 
+def extraerTasas(driver):
+    # Selecciona la tabla entera (contenedor mayor)
+    tablaCompleta = driver.find_elements_by_xpath('//*[@id="divgrillalistadogeneral"]/table')
 
-def extraerTasas1(driver):
-    print("Extrayendo Tasas con la primera función")
-    # Selecciona la tabla entera
-    table_header = driver.find_elements_by_xpath('//*[@id="divgrillalistadogeneral"]/table')
+    # Recorre la tabla y guarda cada una de sus filas en la lista filas[]. Las imprime
+    filas = []
+    for fila in tablaCompleta:
+        print(fila.text)
+        filas.append(fila.text)
 
-    header_row = []
-    for header in table_header:
-        header_row.append(header.text)
-        with open('datosExtraidos.csv', 'a', newline='') as f:
+    print("El tipo de elementos es: ", type(filas))
+    print("La longitud de la lista es: ", len(filas))
+
+    size = len(filas)
+    idx_list = [idx + 1 for idx, val in enumerate(filas) if val == "/n" or val == "\n"] 
+    res = [filas[i: j] for i, j in zip([0] + idx_list, idx_list + ([size] if idx_list[-1] != size else []))]
+  
+    # print result
+    print("The list after splitting by a value : " + str(res))
+
+
+    return (filas)
+
+def escribirEnArchivo(tablaFinal):
+    with open('tasas.csv', 'a', newline='') as f:
             writer = csv.writer(f, delimiter = ',', lineterminator='\n')
-            writer.writerow(header_row)
-    print("VIEJA LISTA")
-    print("Esto es el header_row",header_row)
-    print("Es del tipo: ", type(header_row))
-    print("Y cuenta con",len(header_row),"elementos")
-
-    table_data = driver.find_elements_by_xpath('./th')
-
-    for row in table_data:
-        columns = row.find_elements_by_xpath('./td') # Use dot in the xpath to find elements with in element.
-        table_row = []
-        for column in columns:
-            table_row.append(column.text)
-        # print(table_row)
-
-
-            
-def extraerTasas2(driver):
-    resultados = []
-    final = []
-    print("Extrayendo tasas con SEGUNDA función")
-    # //table[@class="grid_general"]//tbody//tr/th/text()
-    encabezadoTabla = driver.find_elements_by_xpath("//table[@class='grid_general']//tbody//tr/th")
-    for i in range (1,len(encabezadoTabla)):
-        # print(encabezadoTabla[i].text)
-        resultados.append(encabezadoTabla[i].text)
-    for x in range(len(resultados)):
-        print (resultados[x])
-
-    print("El resultado obtenido es del tipo: ",type(resultados))
-        
-    # for i in resultados:
-    #     print(resultados[int(i)].text)
+            writer.writerow(tablaFinal)

@@ -6,7 +6,9 @@ def main():
     loguear(driver)
     # BCRA Tasa pasiva capitalizada
     driver.get("http://agendae.com.ar/listado.aspx?t=2")
-    extraerTasas2(driver)
+    tablaFinal = extraerTasas(driver)
+    # dividirLista(driver, tablaFinal)
+    escribirEnArchivo(tablaFinal)
        
     input("Presione una tecla para terminar.")
     
