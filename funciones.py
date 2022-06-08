@@ -94,10 +94,12 @@ def navegarPorTasas(driver, cant):
 def volverPaginaAnterior(driver):
     driver.execute_script("window.history.go(-1)")
 
-
+# El rejunte de todo
 def extraerTasas(driver):
     # Selecciona la tabla entera (contenedor mayor)
-    tablaCompleta = driver.find_elements_by_xpath('//*[@id="divgrillalistadogeneral"]/table')
+    tablaCompleta = driver.find_element_by_xpath('//*[@id="divgrillalistadogeneral"]/table')
+    print("ESTO ES LA TABLA COMPLETA: ")
+    print(tablaCompleta)
 
     # Recorre la tabla y guarda cada una de sus filas en la lista filas[]. Las imprime
     filas = []
@@ -108,16 +110,36 @@ def extraerTasas(driver):
     print("El tipo de elementos es: ", type(filas))
     print("La longitud de la lista es: ", len(filas))
 
-    size = len(filas)
-    idx_list = [idx + 1 for idx, val in enumerate(filas) if val == "/n" or val == "\n"] 
-    res = [filas[i: j] for i, j in zip([0] + idx_list, idx_list + ([size] if idx_list[-1] != size else []))]
+    # size = len(filas)
+    # idx_list = [idx + 1 for idx, val in enumerate(filas) if val == "/n" or val == "\n"] 
+    # res = [filas[i: j] for i, j in zip([0] + idx_list, idx_list + ([size] if idx_list[-1] != size else []))]
   
-    # print result
-    print("The list after splitting by a value : " + str(res))
-
+    # # print result
+    # print("The list after splitting by a value : " + str(res))
 
     return (filas)
 
+# Ver el video "https://www.youtube.com/watch?v=0QHvgAcGhUc" para más info sobre la extracción de tablas
+# Tiene 15 filas (las dos primeras NO interesan porque son parte del título) y 33 columnas.
+def extraerTasas2(driver):
+    filas = len(driver.find_elements_by_xpath('//*[@id="divgrillalistadogeneral"]/table//tbody//tr'))
+    columnas = len(driver.find_elements_by_xpath('//*[@id="divgrillalistadogeneral"]/table//tbody//tr//th'))
+    print("La cantidad de filas que tiene la tabla es: ", filas)
+    print("La cantidad de columnas que tiene la tabla es: ", columnas)
+
+    # for n in range(3, filas+1):
+    #   for b in range (3,columnas+1):
+    for n in range (3,4):
+        for b in range (5,10):
+            print("Posición - [",n,"][",b, "]")
+            dato = driver.find_element_by_xpath('//*[@id="divgrillalistadogeneral"]/table//tbody/tr["+str(n)"]//td["+str(b)"]')
+            print(dato)
+            print(dato.text, end = "  -  ")
+    
+    uno = driver.find_element_by_xpath('//*[@id="divgrillalistadogeneral"]/table//tbody/tr[2]//td[2]').text
+    print("Este es el elemento UNO: ", uno)
+
+    
 def escribirEnArchivo(tablaFinal):
     with open('tasas.csv', 'a', newline='') as f:
             writer = csv.writer(f, delimiter = ',', lineterminator='\n')
